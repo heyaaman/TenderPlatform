@@ -7,6 +7,7 @@ import {
   TextField,
   Button,
   Alert,
+  Link,
 } from "@mui/material";
 import axios from "axios";
 
@@ -27,11 +28,8 @@ export default function LoginPage() {
         password,
       });
 
-      // Store token
       localStorage.setItem("token", res.data.token);
-
-      // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/"); // ✅ redirect to home
     } catch (err: any) {
       console.error(err);
       setError(err.response?.data?.message || "Login failed");
@@ -46,33 +44,36 @@ export default function LoginPage() {
         boxShadow={3}
         borderRadius={2}
         bgcolor="white"
-        sx={{ minHeight: "300px" }}
+        sx={{ minHeight: "350px" }}
       >
         <Typography variant="h4" align="center" gutterBottom>
           Login
         </Typography>
 
-        {error && <Alert severity="error">{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
         <form onSubmit={handleLogin}>
           <TextField
             fullWidth
-            margin="normal"
             label="Email"
             type="email"
-            required
+            margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
-
           <TextField
             fullWidth
-            margin="normal"
             label="Password"
             type="password"
-            required
+            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           <Button
@@ -85,6 +86,13 @@ export default function LoginPage() {
             Login
           </Button>
         </form>
+
+        <Typography align="center" mt={3}>
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" underline="hover">
+            Sign up here
+          </Link>
+        </Typography>
       </Box>
     </Container>
   );

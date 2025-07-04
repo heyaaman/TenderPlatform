@@ -12,6 +12,7 @@ import {
   InputAdornment,
   CircularProgress,
   Snackbar,
+  Link,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
@@ -35,39 +36,26 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    if (!isValidEmail(email)) {
-      return setError("Please enter a valid email.");
-    }
-
-    if (password.length < 6) {
-      return setError("Password must be at least 6 characters.");
-    }
-
-    if (password !== confirmPassword) {
-      return setError("Passwords do not match.");
-    }
+    if (!isValidEmail(email)) return setError("Please enter a valid email.");
+    if (password.length < 6) return setError("Password must be at least 6 characters.");
+    if (password !== confirmPassword) return setError("Passwords do not match.");
 
     try {
       setLoading(true);
 
-      // Sign up
       await axios.post("http://localhost:5000/auth/signup", {
         email,
         password,
       });
 
-      // Auto-login after signup
       const loginRes = await axios.post("http://localhost:5000/auth/login", {
         email,
         password,
       });
 
       localStorage.setItem("token", loginRes.data.token);
-
-      setSuccessOpen(true); // show snackbar
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000); // wait 2s before redirect
+      setSuccessOpen(true);
+      setTimeout(() => router.push("/"), 2000); // ✅ redirect to home
     } catch (err: any) {
       setError(err.response?.data?.message || "Signup failed");
     } finally {
@@ -82,7 +70,11 @@ export default function SignupPage() {
           Create Your Account
         </Typography>
 
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
         <form onSubmit={handleSignup}>
           <TextField
@@ -109,7 +101,6 @@ export default function SignupPage() {
                   <IconButton
                     onClick={() => setShowPassword(!showPassword)}
                     edge="end"
-                    aria-label="toggle password visibility"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -139,9 +130,15 @@ export default function SignupPage() {
             {loading ? <CircularProgress size={24} /> : "Sign Up"}
           </Button>
         </form>
+
+        <Typography align="center" mt={3}>
+          Already have an account?{" "}
+          <Link href="/login" underline="hover">
+            Login here
+          </Link>
+        </Typography>
       </Box>
 
-      {/* ✅ Success Snackbar */}
       <Snackbar
         open={successOpen}
         autoHideDuration={3000}
