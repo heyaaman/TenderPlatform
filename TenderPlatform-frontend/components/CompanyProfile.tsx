@@ -24,7 +24,7 @@ export default function CompanyProfile() {
     }
 
     axios
-      .get("http://localhost:5000/companies/me", {
+      .get("http://localhost:5000/company/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -56,8 +56,7 @@ export default function CompanyProfile() {
       formData.append("description", company.description);
       if (logo) formData.append("logo", logo);
 
-      // ✅ Correct PUT endpoint (no ID in URL)
-      await axios.put(`http://localhost:5000/companies`, formData, {
+      await axios.put(`http://localhost:5000/company`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
